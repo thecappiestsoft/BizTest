@@ -1,0 +1,139 @@
+/* ==========================================================================
+   worksheet.css — wygląd kart pracy (papier A4) na ekranie i na wydruku.
+   Paper styles: identical on screen and in print. Always black-on-white,
+   independent of the app's light/dark theme.
+   ========================================================================== */
+
+.worksheet {
+  /* paleta „normalna” – delikatne akcenty, nadal czytelna po kserowaniu */
+  --ws-ink: #111;
+  --ws-muted: #4a4a4a;
+  --ws-line: #8c8c8c;
+  --ws-fill: #f1f3f6;
+  --ws-accent: #1d3f8f;
+  --ws-grid: #b9cbe3;
+  --ws-border-w: 1.2px;
+
+  color: var(--ws-ink);
+  font-family: var(--font-sheet);
+  font-size: 11pt;
+  line-height: 1.42;
+  color-scheme: light;
+}
+
+/* Tryb oszczędny (Eco-Print): bez wypełnień, tylko szare obramowania 1px */
+.worksheet--eco {
+  --ws-fill: transparent;
+  --ws-accent: #111;
+  --ws-grid: #d2d2d2;
+  --ws-line: #9e9e9e;
+  --ws-border-w: 1px;
+}
+
+/* ---------- Strona ---------- */
+.sheet {
+  width: 210mm;
+  min-height: 297mm;
+  padding: 13mm 14mm 14mm;
+  margin: 0 0 28px;
+  background: #fff;
+  box-shadow: var(--paper-shadow);
+}
+.worksheet--single .sheet { min-height: 0; margin: 0; }
+
+.sheet__layout { width: 100%; border-collapse: collapse; }
+.sheet__layout > thead > tr > td,
+.sheet__layout > tbody > tr > td { padding: 0; }
+
+/* ---------- Metryczka ucznia ---------- */
+.student-header {
+  width: 100%;
+  margin-bottom: 6mm;
+  border-collapse: collapse;
+  font-family: var(--font-sheet-ui);
+  font-size: 9.5pt;
+}
+.student-header td {
+  padding: 2.2mm 2.8mm;
+  border: var(--ws-border-w) solid var(--ws-line);
+  background: var(--ws-fill);
+  white-space: nowrap;
+  vertical-align: bottom;
+}
+.sh { display: table-cell; }
+.sh--name { width: 46%; }
+.sh--class { width: 17%; }
+.sh--group { width: 14%; }
+.sh__label { font-weight: 700; margin-right: 1.5mm; }
+.sh__fill { display: inline-block; width: calc(100% - 30mm); min-width: 10mm; border-bottom: 1px dotted var(--ws-ink); height: 1em; vertical-align: -1px; }
+.sh--class .sh__fill { width: calc(100% - 13mm); }
+.sh__fill--short { width: 9mm !important; min-width: 9mm; }
+.sh__total { margin-left: 1mm; }
+.sh__badge {
+  display: inline-block; min-width: 6.5mm; padding: 0 1.5mm;
+  text-align: center; font-weight: 800; font-size: 11pt;
+  border: 1.5px solid var(--ws-ink); background: #fff;
+}
+.worksheet--eco .sh__badge { border-width: 1px; }
+
+/* ---------- Tytuł ---------- */
+.sheet__title { margin-bottom: 3mm; padding-bottom: 2.5mm; border-bottom: 2px solid var(--ws-ink); display: flex; justify-content: space-between; align-items: baseline; gap: 6mm; }
+.worksheet--eco .sheet__title { border-bottom: 1px solid var(--ws-line); }
+.sheet__title h1 { margin: 0; font-size: 16pt; font-weight: 700; line-height: 1.2; }
+.sheet__subtitle { font-family: var(--font-sheet-ui); font-size: 9pt; color: var(--ws-muted); white-space: nowrap; }
+.sheet__instructions { margin: 0 0 5mm; font-size: 9.5pt; font-style: italic; color: var(--ws-muted); }
+
+/* ---------- Zadania ---------- */
+.tasks { list-style: none; margin: 0; padding: 0; }
+.task { margin: 0 0 6.5mm; break-inside: avoid; page-break-inside: avoid; }
+.task__head { display: flex; align-items: baseline; gap: 2.5mm; margin-bottom: 1.2mm; font-family: var(--font-sheet-ui); }
+.task__no { font-weight: 800; font-size: 11pt; color: var(--ws-accent); }
+.task__pts { font-size: 9pt; color: var(--ws-muted); }
+.task__prompt { text-align: justify; hyphens: auto; }
+.task__prompt .num, .key .num { font-weight: 700; white-space: nowrap; }
+.tpl-missing { color: #b00020; background: #ffe9ec; font-family: var(--font-mono); font-size: 0.9em; }
+
+/* Zamknięte ABCD */
+.choices { list-style: none; margin: 2mm 0 0; padding: 0 0 0 3mm; display: grid; gap: 1.4mm; }
+.choice { display: flex; align-items: baseline; gap: 2.4mm; }
+.choice__box { flex: none; width: 3.4mm; height: 3.4mm; border: 1px solid var(--ws-ink); border-radius: 50%; transform: translateY(0.5mm); }
+.choice__letter { flex: none; font-weight: 700; min-width: 4mm; }
+
+/* Prawda / Fałsz (tabela CKE) */
+.tf { width: 100%; margin-top: 2mm; border-collapse: collapse; font-size: 10.5pt; }
+.tf th, .tf td { border: var(--ws-border-w) solid var(--ws-line); padding: 1.6mm 2.2mm; vertical-align: middle; }
+.tf th { font-family: var(--font-sheet-ui); font-size: 9pt; background: var(--ws-fill); text-align: left; }
+.tf__no { width: 7mm; text-align: center; }
+.tf__mark { width: 11mm; text-align: center !important; }
+.tf__box { display: inline-block; width: 4mm; height: 4mm; border: 1px solid var(--ws-ink); }
+
+/* Otwarte – linie */
+.lines { margin-top: 1.5mm; }
+.line { height: 8.5mm; border-bottom: 1px dotted var(--ws-line); }
+
+/* Obliczeniowe – kratka SVG */
+.scratch { position: relative; margin-top: 2.5mm; border: var(--ws-border-w) solid var(--ws-line); overflow: hidden; }
+.scratch__svg { display: block; width: 100%; height: 100%; }
+.scratch__line { stroke: var(--ws-grid); stroke-width: 0.8; }
+.scratch__label { position: absolute; top: 1mm; left: 1.5mm; padding: 0 1mm; font-family: var(--font-sheet-ui); font-size: 7.5pt; color: #777; background: #fff; }
+.answer-line { display: flex; align-items: baseline; gap: 2mm; margin-top: 2.5mm; font-family: var(--font-sheet-ui); font-weight: 700; font-size: 10pt; }
+.answer-line__fill { flex: 1; border-bottom: 1px dotted var(--ws-ink); height: 1em; }
+
+/* ---------- Klucz odpowiedzi ---------- */
+.key-banner {
+  margin-bottom: 4mm; padding: 1.8mm 3mm;
+  font-family: var(--font-sheet-ui); font-size: 9pt; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em;
+  border: var(--ws-border-w) solid var(--ws-ink); background: var(--ws-fill);
+}
+.worksheet--eco .key-banner { border-color: var(--ws-line); }
+.key { width: 100%; border-collapse: collapse; font-size: 10.5pt; }
+.key th, .key td { border: var(--ws-border-w) solid var(--ws-line); padding: 2mm 2.5mm; vertical-align: top; text-align: left; }
+.key th { font-family: var(--font-sheet-ui); font-size: 9pt; background: var(--ws-fill); }
+.key tr { break-inside: avoid; page-break-inside: avoid; }
+.key__no { width: 10mm; text-align: center !important; font-weight: 700; }
+.key__pts { width: 12mm; text-align: center !important; }
+.key tfoot td { font-weight: 700; font-family: var(--font-sheet-ui); }
+.key-tf { display: flex; flex-wrap: wrap; gap: 2mm 5mm; }
+
+.key-preview { margin-top: 6mm; padding-top: 4mm; border-top: 1.5px dashed var(--ws-line); }
+.key-preview__title { margin-bottom: 2mm; font-family: var(--font-sheet-ui); font-size: 8.5pt; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ws-muted); }

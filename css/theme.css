@@ -1,0 +1,74 @@
+/* ==========================================================================
+   theme.css — zmienne kolorów i typografii dla motywu jasnego i ciemnego.
+   Design tokens for light / dark themes. Change colours here only.
+   ========================================================================== */
+
+:root {
+  --font-ui: "Inter", "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "JetBrains Mono", "Cascadia Code", Consolas, "SFMono-Regular", Menlo, monospace;
+  --font-sheet: "Cambria", "Georgia", "Times New Roman", serif;
+  --font-sheet-ui: "Calibri", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+
+  --radius-sm: 6px;
+  --radius: 10px;
+  --radius-lg: 14px;
+  --header-h: 64px;
+  --transition: 160ms ease;
+}
+
+/* ---------- Motyw jasny ---------- */
+:root,
+[data-theme="light"] {
+  color-scheme: light;
+  --bg: #f3f4f7;
+  --surface: #ffffff;
+  --surface-2: #f6f7f9;
+  --surface-3: #eceef2;
+  --border: #dde1e7;
+  --border-strong: #c5cbd5;
+  --text: #1b2130;
+  --text-muted: #5d6676;
+  --text-faint: #8a93a3;
+  --accent: #2457d6;
+  --accent-hover: #1c47b4;
+  --accent-contrast: #ffffff;
+  --accent-soft: #e8eefc;
+  --danger: #c4323f;
+  --danger-soft: #fdecee;
+  --success: #1d8049;
+  --success-soft: #e6f5ec;
+  --warning-soft: #fff6e0;
+  --desk: #e4e7ec;
+  --shadow-sm: 0 1px 2px rgba(20, 28, 45, 0.06);
+  --shadow: 0 1px 2px rgba(20, 28, 45, 0.05), 0 6px 20px rgba(20, 28, 45, 0.06);
+  --paper-shadow: 0 1px 3px rgba(20, 28, 45, 0.12), 0 10px 28px rgba(20, 28, 45, 0.10);
+  --focus-ring: 0 0 0 3px rgba(36, 87, 214, 0.32);
+}
+
+/* ---------- Motyw ciemny ---------- */
+[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #0f1218;
+  --surface: #171b23;
+  --surface-2: #1d222c;
+  --surface-3: #252b37;
+  --border: #2a3140;
+  --border-strong: #3a4354;
+  --text: #e5e8ee;
+  --text-muted: #a0a8b7;
+  --text-faint: #6f7888;
+  --accent: #7097ff;
+  --accent-hover: #8eadff;
+  --accent-contrast: #0b1020;
+  --accent-soft: #1e2a47;
+  --danger: #ff7b86;
+  --danger-soft: #3a1d22;
+  --success: #5fd394;
+  --success-soft: #16301f;
+  --warning-soft: #3a3120;
+  --desk: #0b0d12;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.35), 0 8px 24px rgba(0, 0, 0, 0.35);
+  --paper-shadow: 0 2px 6px rgba(0, 0, 0, 0.5), 0 14px 40px rgba(0, 0, 0, 0.45);
+  --focus-ring: 0 0 0 3px rgba(112, 151, 255, 0.4);
+}

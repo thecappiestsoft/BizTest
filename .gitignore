@@ -1,0 +1,9 @@
+# Wynik narzędzia tools/build-single-html.py
+dist/
+
+# Pliki systemowe i edytorów
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp

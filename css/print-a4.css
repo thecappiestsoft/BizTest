@@ -1,0 +1,57 @@
+/* ==========================================================================
+   print-a4.css — dedykowane style @media print (A4, marginesy, paginacja, kratka).
+   Print-only styles. During printing only #print-root (copy of the preview) is shown.
+   ========================================================================== */
+
+@page {
+  size: A4 portrait;
+  margin: 11mm 12mm 12mm;
+}
+
+/* Na ekranie kopia do druku jest ukryta */
+#print-root { display: none; }
+
+@media print {
+  html, body {
+    background: #fff !important;
+    color: #000 !important;
+    display: block !important;
+    min-height: 0 !important;
+  }
+
+  /* drukujemy wyłącznie karty pracy */
+  body > *:not(#print-root) { display: none !important; }
+  #print-root { display: block !important; }
+
+  * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    box-shadow: none !important;
+  }
+
+  .sheet {
+    width: auto;
+    min-height: 0;
+    padding: 0;
+    margin: 0;
+  }
+
+  /* Każda grupa i każdy klucz zaczyna się od nowej strony */
+  .sheet + .sheet {
+    break-before: page;
+    page-break-before: always;
+  }
+
+  /* Metryczka powtarzana na każdej stronie (thead tabeli układu) */
+  .sheet__layout > thead { display: table-header-group; }
+
+  .task,
+  .scratch,
+  .tf tr,
+  .key tr { break-inside: avoid; page-break-inside: avoid; }
+
+  .task__head,
+  .sheet__title { break-after: avoid; page-break-after: avoid; }
+
+  .worksheet { font-size: 11pt; }
+}

@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="pl" data-theme="light" data-skin="ledger">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="description" content="BizTest Gen – offline generator of worksheets and tests for Business & Management classes.">
+  <title>BizTest Gen</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%232457d6'/%3E%3Cpath d='M9 8h9a5 5 0 0 1 1.6 9.7A5 5 0 0 1 18 27H9z' fill='%23fff'/%3E%3C/svg%3E">
+
+  <!-- Wczesne ustawienie motywu, aby uniknąć „mignięcia” jasnego tła -->
+  <script>
+    (function () {
+      try {
+        var t = JSON.parse(localStorage.getItem('biztest.theme'));
+        if (t !== 'light' && t !== 'dark') t = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', t);
+        var k = JSON.parse(localStorage.getItem('biztest.skin'));
+        if (k !== 'ledger' && k !== 'market' && k !== 'classroom') k = 'ledger';
+        document.documentElement.setAttribute('data-skin', k);
+      } catch (e) { document.documentElement.setAttribute('data-skin', 'ledger'); }
+    })();
+  </script>
+
+  <link rel="stylesheet" href="css/theme.css">
+  <link rel="stylesheet" href="css/app.css">
+  <link rel="stylesheet" href="css/worksheet.css">
+  <link rel="stylesheet" href="css/skins/ledger.css">
+  <link rel="stylesheet" href="css/skins/market.css">
+  <link rel="stylesheet" href="css/skins/classroom.css">
+  <link rel="stylesheet" href="css/print-a4.css">
+</head>
+<body>
+  <a class="skip-link" href="#main" data-i18n="app.skip">Przejdź do treści</a>
+
+  <!-- ============ NAGŁÓWEK ============ -->
+  <header class="app-header">
+    <div class="brand">
+      <svg class="brand__logo" viewBox="0 0 32 32" aria-hidden="true">
+        <rect width="32" height="32" rx="8" fill="currentColor"/>
+        <path d="M9 8h9a5 5 0 0 1 1.6 9.7A5 5 0 0 1 18 27H9z" fill="#fff"/>
+        <path d="M12 12h5.5a1.8 1.8 0 0 1 0 3.6H12zM12 19h6a1.9 1.9 0 0 1 0 3.8h-6z" fill="currentColor"/>
+      </svg>
+      <div class="brand__text">
+        <span class="brand__name">BizTest Gen</span>
+        <span class="brand__tag" data-i18n="app.tagline">Generator kart pracy i sprawdzianów</span>
+      </div>
+    </div>
+
+    <nav class="tabs" role="tablist" data-i18n-aria="nav.label">
+      <button class="tab" role="tab" id="tab-generator" data-view="generator" aria-controls="view-generator" aria-selected="true">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2h9l5 5v15H6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M14 2v6h6M9 13h8M9 17h6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        <span data-i18n="nav.generator">Generator</span>
+      </button>
+      <button class="tab" role="tab" id="tab-builder" data-view="builder" aria-controls="view-builder" aria-selected="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M13 7l4 4" stroke="currentColor" stroke-width="1.8"/></svg>
+        <span data-i18n="nav.builder">Kreator zadań</span>
+      </button>
+    </nav>
+
+    <!-- Rysunek kredą (widoczny tylko w stylu „Tablica w klasie”) -->
+    <div class="chalk-doodle" id="chalk-doodle" aria-hidden="true"></div>
+
+    <div class="header-controls">
+      <!-- Przełącznik stylu graficznego: tylko ikony -->
+      <div class="segmented segmented--icons" role="group" data-i18n-aria="controls.skin">
+        <button type="button" data-skin-value="ledger" aria-pressed="true" data-i18n-aria="controls.skinLedger" data-i18n-title="controls.skinLedger">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="3" width="15" height="18" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M3 7h3M3 12h3M3 17h3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M10 3v18" stroke="currentColor" stroke-width="1.4"/><path d="M13 8h4M13 12h4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        </button>
+        <button type="button" data-skin-value="market" aria-pressed="false" data-i18n-aria="controls.skinMarket" data-i18n-title="controls.skinMarket">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 20h18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M7 5v12M12 8v9M17 3v12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><rect x="5.3" y="8" width="3.4" height="6" rx=".6" fill="currentColor"/><rect x="10.3" y="10" width="3.4" height="4.5" rx=".6" fill="none" stroke="currentColor" stroke-width="1.4"/><rect x="15.3" y="5" width="3.4" height="7" rx=".6" fill="currentColor"/></svg>
+        </button>
+        <button type="button" data-skin-value="classroom" aria-pressed="false" data-i18n-aria="controls.skinClassroom" data-i18n-title="controls.skinClassroom">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="3.5" width="19" height="13" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M6 13l3.5-3.5 3 2.5L18 7" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 21l2-4.5M16 21l-2-4.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+      <!-- Przełącznik języka PL | EN -->
+      <div class="segmented" role="group" data-i18n-aria="controls.language">
+        <button type="button" data-lang="pl" aria-pressed="true" lang="pl" title="Polski">PL</button>
+        <button type="button" data-lang="en" aria-pressed="false" lang="en" title="English">EN</button>
+      </div>
+      <!-- Przełącznik motywu: tylko ikony -->
+      <div class="segmented segmented--icons" role="group" data-i18n-aria="controls.theme">
+        <button type="button" data-theme-value="light" aria-pressed="true" data-i18n-aria="controls.light" data-i18n-title="controls.light">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </button>
+        <button type="button" data-theme-value="dark" aria-pressed="false" data-i18n-aria="controls.dark" data-i18n-title="controls.dark">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.8 6.8 0 0 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Pasek notowań (widoczny tylko w stylu „Parkiet giełdowy”) -->
+  <div class="ticker" aria-hidden="true"><div class="ticker__track" id="ticker-track"></div></div>
+
+  <main id="main">
+    <!-- ============ WIDOK: GENERATOR ============ -->
+    <section class="view view--generator" id="view-generator" role="tabpanel" aria-labelledby="tab-generator">
+      <aside class="panel panel--settings">
+        <div class="panel__section">
+          <h2 class="panel__title" data-i18n="gen.testSettings">Ustawienia sprawdzianu</h2>
+          <label class="field">
+            <span class="field__label" data-i18n="gen.title">Tytuł karty pracy</span>
+            <input type="text" id="gen-title" maxlength="120" data-i18n-placeholder="gen.titlePlaceholder">
+          </label>
+          <div class="field-row">
+            <label class="field">
+              <span class="field__label" data-i18n="gen.groups">Liczba grup</span>
+              <select id="gen-groups"></select>
+            </label>
+            <div class="field field--grow">
+              <label class="field__label" for="gen-seed" data-i18n="gen.seed">Kod zestawu (seed)</label>
+              <div class="input-group">
+                <input type="text" id="gen-seed" maxlength="40" spellcheck="false" autocomplete="off" placeholder="SEED-84920">
+                <button type="button" class="btn btn--icon" id="gen-seed-random" data-i18n-aria="gen.seedRandom" data-i18n-title="gen.seedRandom">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="3.5" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="8.5" cy="8.5" r="1.4" fill="currentColor"/><circle cx="15.5" cy="15.5" r="1.4" fill="currentColor"/><circle cx="12" cy="12" r="1.4" fill="currentColor"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+          <p class="hint" data-i18n="gen.seedHint">Ten sam kod i te same zadania odtworzą identyczny zestaw i klucz.</p>
+        </div>
+
+        <div class="panel__section">
+          <h2 class="panel__title" data-i18n="gen.questions">Zadania</h2>
+          <div class="field-row">
+            <label class="field">
+              <span class="field__label" data-i18n="gen.level">Poziom</span>
+              <select id="gen-level">
+                <option value="all" data-i18n="levels.all">Wszystkie</option>
+                <option value="podstawowy" data-i18n="levels.podstawowy">Podstawowy</option>
+                <option value="rozszerzony" data-i18n="levels.rozszerzony">Rozszerzony</option>
+              </select>
+            </label>
+            <label class="field field--grow">
+              <span class="field__label" data-i18n="gen.search">Szukaj</span>
+              <input type="search" id="gen-search" data-i18n-placeholder="gen.searchPlaceholder">
+            </label>
+          </div>
+          <div class="field">
+            <span class="field__label" data-i18n="gen.topics">Działy</span>
+            <div class="chips" id="gen-topics"></div>
+          </div>
+          <label class="check">
+            <input type="checkbox" id="gen-include-custom">
+            <span data-i18n="gen.includeCustom">Pokaż moje zadania z kreatora</span>
+          </label>
+
+          <div class="list-toolbar">
+            <button type="button" class="btn btn--small" id="gen-select-visible" data-i18n="gen.selectVisible">Zaznacz widoczne</button>
+            <button type="button" class="btn btn--small" id="gen-clear" data-i18n="gen.clear">Wyczyść</button>
+            <div class="random-pick">
+              <input type="number" id="gen-random-count" min="1" max="40" value="10" data-i18n-aria="gen.randomCount">
+              <button type="button" class="btn btn--small" id="gen-random" data-i18n="gen.random">Losuj</button>
+            </div>
+          </div>
+          <div class="question-list" id="gen-question-list" role="group" data-i18n-aria="gen.questions"></div>
+          <p class="summary" id="gen-summary" aria-live="polite"></p>
+        </div>
+
+        <div class="panel__section">
+          <h2 class="panel__title" data-i18n="gen.printSettings">Wydruk</h2>
+          <label class="switch">
+            <input type="checkbox" id="gen-eco">
+            <span class="switch__track" aria-hidden="true"></span>
+            <span class="switch__text">
+              <span data-i18n="gen.eco">Tryb oszczędny (Eco-Print)</span>
+              <small data-i18n="gen.ecoHint">Tylko obramowania 1px w odcieniach szarości</small>
+            </span>
+          </label>
+          <label class="switch">
+            <input type="checkbox" id="gen-key">
+            <span class="switch__track" aria-hidden="true"></span>
+            <span class="switch__text">
+              <span data-i18n="gen.includeKey">Dołącz klucz nauczyciela</span>
+              <small data-i18n="gen.includeKeyHint">Osobne strony z pełnym tokiem obliczeń</small>
+            </span>
+          </label>
+          <label class="field">
+            <span class="field__label" data-i18n="gen.scratch">Wysokość kratki na obliczenia</span>
+            <select id="gen-scratch">
+              <option value="4">4 cm</option>
+              <option value="5">5 cm</option>
+              <option value="6">6 cm</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="panel__actions">
+          <button type="button" class="btn btn--primary btn--block" id="gen-generate">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z" fill="currentColor"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z" fill="currentColor"/></svg>
+            <span data-i18n="gen.generate">Generuj karty pracy</span>
+          </button>
+        </div>
+      </aside>
+
+      <section class="panel panel--preview" aria-labelledby="preview-title">
+        <div class="preview-toolbar">
+          <div class="preview-toolbar__info">
+            <h2 class="panel__title" id="preview-title" data-i18n="preview.title">Podgląd wydruku A4</h2>
+            <span class="seed-badge" id="gen-seed-badge" hidden></span>
+          </div>
+          <div class="preview-toolbar__actions">
+            <div class="zoom" role="group" data-i18n-aria="preview.zoom">
+              <button type="button" class="btn btn--icon btn--ghost" id="zoom-out" data-i18n-aria="preview.zoomOut" data-i18n-title="preview.zoomOut">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 12h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              </button>
+              <span class="zoom__value" id="zoom-value">80%</span>
+              <button type="button" class="btn btn--icon btn--ghost" id="zoom-in" data-i18n-aria="preview.zoomIn" data-i18n-title="preview.zoomIn">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 12h12M12 6v12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              </button>
+            </div>
+            <button type="button" class="btn btn--primary" id="gen-print" data-i18n-title="preview.printHint">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 9V3h10v6M7 17H4v-7h16v7h-3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M7 14h10v7H7z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+              <span data-i18n="preview.print">Drukuj / PDF</span>
+            </button>
+          </div>
+        </div>
+        <div class="preview-scroll">
+          <div class="preview-pages" id="gen-preview"></div>
+        </div>
+      </section>
+    </section>
+
+    <!-- ============ WIDOK: KREATOR ZADAŃ ============ -->
+    <section class="view view--builder" id="view-builder" role="tabpanel" aria-labelledby="tab-builder" hidden>
+      <div class="builder-grid">
+        <section class="panel panel--form" aria-labelledby="builder-title">
+          <div class="panel__head">
+            <h2 class="panel__title" id="builder-title" data-i18n="builder.title">Nowe zadanie</h2>
+            <span class="edit-badge" id="builder-edit-badge" hidden></span>
+          </div>
+          <form id="builder-form" class="builder-form" novalidate autocomplete="off"></form>
+        </section>
+
+        <section class="panel panel--preview panel--live" aria-labelledby="live-title">
+          <div class="preview-toolbar">
+            <div class="preview-toolbar__info">
+              <h2 class="panel__title" id="live-title" data-i18n="builder.livePreview">Podgląd na żywo</h2>
+            </div>
+            <div class="preview-toolbar__actions">
+              <button type="button" class="btn btn--small" id="builder-reroll">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 0 0-14.5-4.6L4 8M4 4v4h4M4 13a8 8 0 0 0 14.5 4.6L20 16m0 4v-4h-4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <span data-i18n="builder.reroll">Losuj ponownie</span>
+              </button>
+            </div>
+          </div>
+          <div class="preview-scroll preview-scroll--live">
+            <div class="preview-pages preview-pages--live" id="builder-preview"></div>
+          </div>
+        </section>
+      </div>
+
+      <section class="panel panel--library" aria-labelledby="library-title">
+        <div class="panel__head">
+          <h2 class="panel__title" id="library-title" data-i18n="library.title">Moje zadania</h2>
+          <div class="panel__head-actions">
+            <button type="button" class="btn btn--small" id="library-import">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15V3m0 12l-4-4m4 4l4-4M4 17v3h16v-3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span data-i18n="library.import">Importuj JSON</span>
+            </button>
+            <button type="button" class="btn btn--small" id="library-export">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m0-12L8 7m4-4l4 4M4 17v3h16v-3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span data-i18n="library.export">Eksportuj moje_zadania.json</span>
+            </button>
+            <input type="file" id="library-file" accept="application/json,.json" hidden>
+          </div>
+        </div>
+        <div class="library" id="library-list"></div>
+      </section>
+    </section>
+  </main>
+
+  <!-- ============ STOPKA ============ -->
+  <footer class="app-footer">
+    <span>© 2026 CappySoft.pl</span>
+  </footer>
+
+  <!-- Kopia podglądu używana wyłącznie podczas drukowania -->
+  <div id="print-root" aria-hidden="true"></div>
+  <div id="toast-region" class="toast-region" aria-live="polite"></div>
+
+  <!-- ============ SKRYPTY (kolejność ma znaczenie) ============ -->
+  <!-- narzędzia -->
+  <script src="js/utils/dom.js"></script>
+  <script src="js/utils/storage.js"></script>
+  <script src="js/utils/events.js"></script>
+  <!-- tłumaczenia -->
+  <script src="js/i18n/i18n.js"></script>
+  <script src="js/i18n/locales/pl.js"></script>
+  <script src="js/i18n/locales/en.js"></script>
+  <!-- silnik -->
+  <script src="js/core/prng.js"></script>
+  <script src="js/core/mathParser.js"></script>
+  <script src="js/core/templateEngine.js"></script>
+  <script src="js/core/testBuilder.js"></script>
+  <!-- baza zadań -->
+  <script src="data/questions_db.js"></script>
+  <script src="data/questions/personal_finance.js"></script>
+  <script src="data/questions/financial_market.js"></script>
+  <script src="data/questions/enterprise.js"></script>
+  <script src="data/questions/marketing.js"></script>
+  <script src="data/questions/project_mgmt.js"></script>
+  <script src="data/questions/economy.js"></script>
+  <script src="js/core/customBank.js"></script>
+  <!-- renderowanie i interfejs -->
+  <script src="js/render/worksheet.js"></script>
+  <script src="js/ui/toast.js"></script>
+  <script src="js/ui/dialog.js"></script>
+  <script src="js/ui/theme.js"></script>
+  <script src="js/ui/skin.js"></script>
+  <script src="js/ui/decorations.js"></script>
+  <script src="js/ui/languageSwitch.js"></script>
+  <script src="js/ui/questionMeta.js"></script>
+  <script src="js/views/generatorView.js"></script>
+  <script src="js/views/builderView.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

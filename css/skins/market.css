@@ -1,0 +1,134 @@
+/* ==========================================================================
+   skins/market.css — Styl B „Parkiet giełdowy”
+   Terminal notowań: pasek tickera z pojęciami z lekcji, kolory wzrost/spadek, cyfry o stałej szerokości.
+   Trading-floor skin. Works with data-theme="light" and "dark".
+   ========================================================================== */
+
+html[data-skin="market"] {
+  --mono: "JetBrains Mono", "Cascadia Code", Consolas, "DejaVu Sans Mono", monospace;
+  --ticker-h: 34px;
+  --ticker-bg: #040912;
+  --ticker-text: #e4ecf7;
+  --up: #22c55e;
+  --down: #f43f5e;
+  --flat: #fbbf24;
+}
+
+/* Jasny: biały ekran notowań */
+html[data-skin="market"][data-theme="light"] {
+  color-scheme: light;
+  --bg: #edf1f7;
+  --surface: #ffffff;
+  --surface-2: #f6f8fb;
+  --surface-3: #e8edf4;
+  --border: #d5dde8;
+  --border-strong: #b7c4d6;
+  --text: #0d1626;
+  --text-muted: #51617b;
+  --text-faint: #8593aa;
+  --accent: #15803d;
+  --accent-hover: #166534;
+  --accent-contrast: #ffffff;
+  --accent-soft: rgba(21, 128, 61, 0.10);
+  --danger: #dc2626;
+  --desk: #dfe6ef;
+  --shadow: 0 1px 2px rgba(13, 22, 38, 0.06);
+  --info: #0369a1;
+  --header-bg: #ffffff;
+  --panel-grad: var(--surface);
+  --grid-line: rgba(3, 105, 161, 0.05);
+  --dot: rgba(3, 105, 161, 0.12);
+  --field-bg: #ffffff;
+}
+
+/* Ciemny: terminal */
+html[data-skin="market"][data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #060c17;
+  --surface: #0c1524;
+  --surface-2: #101b2e;
+  --surface-3: #15223a;
+  --border: #1c2b45;
+  --border-strong: #2a3d60;
+  --text: #e4ecf7;
+  --text-muted: #8a9cba;
+  --text-faint: #56688a;
+  --accent: #22c55e;
+  --accent-hover: #16a34a;
+  --accent-contrast: #03140a;
+  --accent-soft: rgba(34, 197, 94, 0.13);
+  --danger: #f43f5e;
+  --desk: #050a13;
+  --shadow: none;
+  --info: #38bdf8;
+  --header-bg: #08101e;
+  --panel-grad: linear-gradient(180deg, #0e192b, #0b1322);
+  --grid-line: rgba(56, 189, 248, 0.045);
+  --dot: rgba(56, 189, 248, 0.10);
+  --field-bg: #08111f;
+}
+
+html[data-skin="market"] body {
+  background-image:
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+/* ---------- Nagłówek ---------- */
+html[data-skin="market"] .app-header { background: var(--header-bg); backdrop-filter: none; }
+html[data-skin="market"] .brand__name { font-family: var(--mono); letter-spacing: 0.02em; }
+html[data-skin="market"] .brand__name::after { content: " ▲"; color: var(--up); font-size: 12px; vertical-align: 3px; }
+html[data-skin="market"] .brand__tag { font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; }
+html[data-skin="market"] .tabs, html[data-skin="market"] .segmented, html[data-skin="market"] .segmented button { border-radius: 3px; }
+html[data-skin="market"] .tab { font-family: var(--mono); font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; border-radius: 3px; }
+html[data-skin="market"] .tab[aria-selected="true"] { background: var(--accent-soft); color: var(--accent); box-shadow: none; }
+
+/* ---------- Pasek notowań (element .ticker w index.html) ---------- */
+.ticker { display: none; }
+html[data-skin="market"] .ticker {
+  display: block; position: sticky; top: var(--header-h); z-index: 19;
+  height: var(--ticker-h); overflow: hidden;
+  background: var(--ticker-bg); border-bottom: 1px solid #1c2b45;
+}
+.ticker__track {
+  display: flex; align-items: center; gap: 42px; width: max-content; height: 100%; padding-left: 24px;
+  font-family: var(--mono); font-size: 13px; white-space: nowrap; color: var(--ticker-text);
+  animation: ticker-scroll 45s linear infinite;
+}
+.ticker:hover .ticker__track { animation-play-state: paused; }
+.ticker__item b { margin-right: 6px; font-weight: 700; }
+.ticker__item .up { color: var(--up); }
+.ticker__item .down { color: var(--down); }
+.ticker__item .flat { color: var(--flat); }
+@keyframes ticker-scroll { to { transform: translateX(-50%); } }
+@media (prefers-reduced-motion: reduce) { .ticker__track { animation: none; } }
+
+html[data-skin="market"] .panel--settings,
+html[data-skin="market"] .panel--live { top: calc(var(--header-h) + var(--ticker-h) + 16px); max-height: calc(100vh - var(--header-h) - var(--ticker-h) - 40px); }
+
+/* ---------- Panele ---------- */
+html[data-skin="market"] .panel { border-radius: 6px; background: var(--panel-grad); }
+html[data-skin="market"] .panel::after {
+  content: ""; position: absolute; top: 0; left: 0; right: 0; height: 2px; border-radius: 6px 6px 0 0; pointer-events: none;
+  background: linear-gradient(90deg, var(--up), var(--info) 60%, transparent);
+}
+html[data-skin="market"] .panel__title { font-family: var(--mono); color: var(--info); letter-spacing: 0.1em; }
+html[data-skin="market"] .panel__title::before { content: "● "; color: var(--up); animation: market-blink 1.6s steps(2) infinite; }
+@keyframes market-blink { 50% { opacity: 0.25; } }
+@media (prefers-reduced-motion: reduce) { html[data-skin="market"] .panel__title::before { animation: none; } }
+
+html[data-skin="market"] input, html[data-skin="market"] select, html[data-skin="market"] textarea { background: var(--field-bg); border-radius: 3px; font-variant-numeric: tabular-nums; }
+html[data-skin="market"] .btn { border-radius: 3px; }
+html[data-skin="market"] .btn--primary { font-family: var(--mono); text-transform: uppercase; letter-spacing: 0.06em; box-shadow: 0 0 22px rgba(34, 197, 94, 0.30); }
+html[data-skin="market"] .btn--primary span::before { content: "▶ "; }
+html[data-skin="market"] .chip span { border-radius: 3px; font-family: var(--mono); font-size: 12px; }
+html[data-skin="market"] .chip input:checked + span { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+html[data-skin="market"] .qgroup__title { font-family: var(--mono); color: var(--info); }
+html[data-skin="market"] .qitem.is-selected { background: var(--accent-soft); box-shadow: inset 3px 0 0 var(--accent); }
+html[data-skin="market"] .badge { border-radius: 3px; font-family: var(--mono); font-weight: 500; }
+html[data-skin="market"] .seed-badge { font-family: var(--mono); border-radius: 3px; background: var(--accent-soft); color: var(--accent); border: 1px solid var(--accent); }
+html[data-skin="market"] .summary, html[data-skin="market"] .zoom__value { font-family: var(--mono); }
+html[data-skin="market"] .preview-scroll { background-color: var(--desk); background-image: radial-gradient(var(--dot) 1px, transparent 1px); background-size: 22px 22px; }
+html[data-skin="market"] .lib-card { border-radius: 4px; }
+html[data-skin="market"] .app-footer { background: var(--ticker-bg); color: #8a9cba; border-top: 0; font-family: var(--mono); }
